@@ -6,8 +6,11 @@ defmodule Json5.MixProject do
       app: :json5,
       version: "0.0.1",
       elixir: "~> 1.10",
+      description: "Json5 in Elixir",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      source_url: "https://github.com/thomas9911/json5"
     ]
   end
 
@@ -28,6 +31,13 @@ defmodule Json5.MixProject do
       {:ex_unicode, "~> 1.0"},
       {:unicode_set, "~> 0.13"},
       {:decimal, "~> 2.0.0"}
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{"Github" => "https://github.com/thomas9911/json5"}
     ]
   end
 end
