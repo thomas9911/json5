@@ -4,7 +4,7 @@ defmodule Json5.MixProject do
   def project do
     [
       app: :json5,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 1.10",
       description: "Json5 in Elixir",
       start_permanent: Mix.env() == :prod,
@@ -24,9 +24,9 @@ defmodule Json5.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:credo, ">= 0.0.0", only: :dev, runtime: false},
-      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
+      {:credo, "~> 1.5", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:combine, "~> 0.10"},
       {:ex_unicode, "~> 1.0"},
       {:unicode_set, "~> 0.13"},

@@ -5,13 +5,15 @@ defmodule Json5.Decode.Object do
   import Combine.Parsers.Base
   import Combine.Parsers.Text
   import Json5.Decode.Helper
-  require Unicode.Set
 
   alias Json5.Decode
+  alias Json5.ECMA
 
   require Json5.ECMA
 
   def object(config \\ %{}) do
+    object_new_function = Map.get(config, :object_new_function, &Map.new/1)
+
     either(
       pipe(
         [
@@ -33,7 +35,7 @@ defmodule Json5.Decode.Object do
           ignore(char("}")),
           ignore_whitespace()
         ],
-        fn [expr] -> Map.new(expr) end
+        fn [expr] -> object_new_function.(expr) end
       )
     )
   end
@@ -72,7 +74,7 @@ defmodule Json5.Decode.Object do
   end
 
   defp ecma_identifier() do
-    if_not(ecma_reserved_word(), ecma_identifier_name())
+    if_not(ecma_reserved_word(), ECMA.ecma_identifier_name())
   end
 
   defp ecma_reserved_word() do
@@ -131,38 +133,38 @@ defmodule Json5.Decode.Object do
   #   ])
   # end
 
-  defp ecma_identifier_name() do
-    pipe(
-      [
-        ecma_identifier_start(),
-        take_while(&Json5.ECMA.is_unicode_identifier_letter/1)
-      ],
-      &Enum.join/1
-    )
-  end
+  # defp ecma_identifier_name() do
+  #   pipe(
+  #     [
+  #       ecma_identifier_start(),
+  #       take_while(&Json5.ECMA.is_unicode_identifier_letter/1)
+  #     ],
+  #     &Enum.join/1
+  #   )
+  # end
 
-  defp ecma_identifier_start() do
-    choice([
-      ecma_unicode_letter(),
-      char("$"),
-      char("_")
-    ])
-  end
+  # defp ecma_identifier_start() do
+  #   choice([
+  #     ecma_unicode_letter(),
+  #     char("$"),
+  #     char("_")
+  #   ])
+  # end
 
-  defp ecma_unicode_letter() do
-    satisfy(char(), fn ch ->
-      (ch
-       |> Unicode.category()
-       |> Enum.at(0)) in [
-        :Lu,
-        :Ll,
-        :Lt,
-        :Lm,
-        :Lo,
-        :Nl
-      ]
-    end)
-  end
+  # defp ecma_unicode_letter() do
+  #   satisfy(char(), fn ch ->
+  #     (ch
+  #      |> Unicode.category()
+  #      |> Enum.at(0)) in [
+  #       :Lu,
+  #       :Ll,
+  #       :Lt,
+  #       :Lm,
+  #       :Lo,
+  #       :Nl
+  #     ]
+  #   end)
+  # end
 
   defp cast_json5_member([key, value], %{object_key_function: func})
        when is_function(func, 1) do

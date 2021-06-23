@@ -30,4 +30,66 @@ defmodule Json5.EncodeTest do
       assert {:ok, unquote(expected)} = Json5.encode(unquote(input))
     end
   end
+
+  test "encode array pretty" do
+    input = ["one", "two", "three"]
+
+    expected = """
+    [
+      'one',
+      'two',
+      'three',
+    ]
+    """
+
+    assert expected == Json5.encode!(input, pretty: true)
+  end
+
+  test "encode object map pretty" do
+    input = %{
+      "using spaces" => 1,
+      valid_key: true,
+      nested: %{more: 123},
+      array: [1, 2, 3]
+    }
+
+    expected = """
+    {
+      array: [
+        1,
+        2,
+        3,
+      ],
+      nested: {
+        more: 123,
+      },
+      valid_key: true,
+      'using spaces': 1,
+    }
+    """
+
+    assert expected == Json5.encode!(input, pretty: true)
+  end
+
+  test "encode object map compact" do
+    input = %{
+      "using spaces" => 1,
+      valid_key: true,
+      nested: %{more: 123},
+      array: [1, 2, 3]
+    }
+
+    expected = """
+    {array:[1,2,3],nested:{more:123},valid_key:true,'using spaces':1}\
+    """
+
+    assert expected == Json5.encode!(input, compact: true)
+  end
+
+  test "encode invalid input" do
+    assert {:error, %Json5.Encode.Error{type: :invalid_input} = exception} =
+             Json5.encode(0..10, %{compact: true})
+
+    assert "unable to format input" == Exception.message(exception)
+  end
 end

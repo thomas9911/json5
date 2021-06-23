@@ -73,7 +73,7 @@ defmodule Json5.ECMA do
     end
   end
 
-  defp ecma_identifier_name() do
+  def ecma_identifier_name() do
     pipe(
       [
         ecma_identifier_start(),
