@@ -1,6 +1,6 @@
 defmodule Json5.ECMA do
   @moduledoc """
-  Define some ECMA constants
+  Defines some ECMA constants
   """
   require Unicode.Set
 
@@ -77,7 +77,7 @@ defmodule Json5.ECMA do
     pipe(
       [
         ecma_identifier_start(),
-        take_while(&is_unicode_identifier_letter/1)
+        many(ecma_identifier_part())
       ],
       &Enum.join/1
     )
@@ -85,10 +85,18 @@ defmodule Json5.ECMA do
 
   defp ecma_identifier_start() do
     choice([
-      ecma_unicode_letter(),
       char("$"),
-      char("_")
+      char("_"),
+      sequence([char("\\"), char("u"), times(hex_digit(), 4)]),
+      ecma_unicode_letter()
     ])
+  end
+
+  defp ecma_identifier_part() do
+    either(
+      ecma_identifier_start(),
+      satisfy(char(), &is_unicode_identifier_letter/1)
+    )
   end
 
   defp ecma_unicode_letter() do

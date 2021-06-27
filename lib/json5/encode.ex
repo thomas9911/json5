@@ -1,6 +1,6 @@
 defmodule Json5.Encode do
   @moduledoc """
-  Documentation for `Json5`.
+  Encode Elixir term to Json5 string
   """
   require Decimal
   require Json5.ECMA

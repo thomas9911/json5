@@ -7,19 +7,21 @@ defmodule Json5.Decode.Number do
 
   def number() do
     either(ecma_hex_integer_literal(), ecma_decimal_literal())
-    # ecma_hex_integer_literal()
   end
 
   defp ecma_hex_integer_literal() do
-    either(string("0x"), string("0X"))
-    |> ignore()
-    |> many1(hex_digit())
-    |> map(fn chars ->
-      chars
-      |> Enum.join()
-      |> String.to_integer(16)
-      |> Decimal.new()
-    end)
+    pipe(
+      [
+        ignore(either(string("0x"), string("0X"))),
+        many1(hex_digit())
+      ],
+      fn chars ->
+        chars
+        |> Enum.join()
+        |> String.to_integer(16)
+        |> Decimal.new()
+      end
+    )
   end
 
   def ecma_decimal_literal do

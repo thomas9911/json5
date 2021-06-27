@@ -1,6 +1,6 @@
 defmodule Json5.Decode do
   @moduledoc """
-  Documentation for `Json5`.
+  Decode Json5 string to Elixir term
   """
   import Combine.Parsers.Base
   import Json5.Decode.Helper

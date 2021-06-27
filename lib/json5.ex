@@ -1,6 +1,6 @@
 defmodule Json5 do
   @moduledoc """
-  Documentation for `Json5`.
+  Convert Json5 to Elixir term and back
   """
 
   @doc """

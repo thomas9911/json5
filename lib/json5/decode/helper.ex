@@ -1,19 +1,3 @@
-# defmodule Json5.Decode.Helper do
-#     @moduledoc """
-#     Documentation for `Json5`.
-#     """
-
-#     import NimbleParsec
-
-#     def stuff(input) do
-#         IO.inspect(input)
-
-#         input
-#         :error
-#     end
-
-# end
-
 defmodule Json5.Decode.Helper do
   import Combine.Helpers
   import Combine.Parsers.Base
@@ -49,7 +33,6 @@ defmodule Json5.Decode.Helper do
   def ignore_whitespace(prev \\ nil) do
     prev
     |> sequence(Enum.map(@ignore_tags, &apply/1))
-    # |> many(choice([remove_white_space(), single_line_comment()]))
     |> ignore()
   end
 

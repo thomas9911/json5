@@ -2,10 +2,6 @@
 
 Json5 in elixir.
 
-## NOTE
-
-Currently the spec is not entirely implemented, for instance multiline string.
-
 ## Usage
 
 ```elixir
@@ -22,19 +18,18 @@ input = """
 Json5.decode(input)
 ```
 
+For full examples and options go to the moduledocs:
+[https://hexdocs.pm/json5](https://hexdocs.pm/json5/Json5.html)
+
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+If [available in Hex](https://hex.pm/packages/json5), the package can be installed
 by adding `json5` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:json5, "~> 0.0.1"}
+    {:json5, "~> 0.1.0"}
   ]
 end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/json5](https://hexdocs.pm/json5).

@@ -68,9 +68,6 @@ defmodule Json5.Decode.Object do
       ecma_identifier(),
       Decode.String.string()
     )
-
-    # string("test") 
-    # ecma_identifier()
   end
 
   defp ecma_identifier() do
@@ -80,91 +77,6 @@ defmodule Json5.Decode.Object do
   defp ecma_reserved_word() do
     choice(Enum.map(Json5.ECMA.reserved_words(), &string/1))
   end
-
-  # defp ecma_reserved_word() do
-  #   choice([
-  #     Decode.Null.null(),
-  #     Decode.Boolean.boolean(),
-  #     ecma_keyword(),
-  #     ecma_future_keyword()
-  #   ])
-  # end
-
-  # defp ecma_keyword() do
-  #   choice([
-  #     string("break"),
-  #     string("do"),
-  #     string("instanceof"),
-  #     string("typeof"),
-  #     string("case"),
-  #     string("else"),
-  #     string("new"),
-  #     string("var"),
-  #     string("catch"),
-  #     string("finally"),
-  #     string("return"),
-  #     string("void"),
-  #     string("continue"),
-  #     string("for"),
-  #     string("switch"),
-  #     string("while"),
-  #     string("debugger"),
-  #     string("function"),
-  #     string("this"),
-  #     string("with"),
-  #     string("default"),
-  #     string("if"),
-  #     string("throw"),
-  #     string("delete"),
-  #     string("in"),
-  #     string("try")
-  #   ])
-  # end
-
-  # defp ecma_future_keyword() do
-  #   choice([
-  #     string("class"),
-  #     string("enum"),
-  #     string("extends"),
-  #     string("super"),
-  #     string("const"),
-  #     string("export"),
-  #     string("import")
-  #   ])
-  # end
-
-  # defp ecma_identifier_name() do
-  #   pipe(
-  #     [
-  #       ecma_identifier_start(),
-  #       take_while(&Json5.ECMA.is_unicode_identifier_letter/1)
-  #     ],
-  #     &Enum.join/1
-  #   )
-  # end
-
-  # defp ecma_identifier_start() do
-  #   choice([
-  #     ecma_unicode_letter(),
-  #     char("$"),
-  #     char("_")
-  #   ])
-  # end
-
-  # defp ecma_unicode_letter() do
-  #   satisfy(char(), fn ch ->
-  #     (ch
-  #      |> Unicode.category()
-  #      |> Enum.at(0)) in [
-  #       :Lu,
-  #       :Ll,
-  #       :Lt,
-  #       :Lm,
-  #       :Lo,
-  #       :Nl
-  #     ]
-  #   end)
-  # end
 
   defp cast_json5_member([key, value], %{object_key_function: func})
        when is_function(func, 1) do
@@ -182,12 +94,4 @@ defmodule Json5.Decode.Object do
   defp cast_json5_member([key, value], _) do
     {key, value}
   end
-
-  #   defp ecma_unicode_digit() do
-  #     satisfy(char(), &Unicode.digits?/1)
-  #   end
-
-  #   defp json5_punctuation do
-  #     one_of(char(), ["{", "}", "[", "]", ":", ","])
-  #   end
 end

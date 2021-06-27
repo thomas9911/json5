@@ -7,14 +7,8 @@ defmodule Json5.Decode.String do
 
   def string() do
     either(
-      # ignore(char("'"))
-      # |> json5_single_string_characters()
-      # |> ignore(char("'")),
       between(char("'"), json5_single_string_characters(), char("'")),
       between(char("\""), json5_double_string_characters(), char("\""))
-      # ignore(char("\""))
-      # |> json5_double_string_characters()
-      # |> ignore(char("\""))
     )
   end
 
@@ -23,7 +17,7 @@ defmodule Json5.Decode.String do
   end
 
   defp json5_single_string_character() do
-    if_not(char("'"), char())
+    if_not(char("'"), escape_new_line_char())
   end
 
   defp json5_double_string_characters(prev \\ nil) do
@@ -31,6 +25,19 @@ defmodule Json5.Decode.String do
   end
 
   defp json5_double_string_character() do
-    if_not(char("\""), char())
+    if_not(char("\""), escape_new_line_char())
+  end
+
+  defp escape_new_line_char() do
+    either(ignore(sequence([char("\\"), ecma_line_terminator()])), char())
+  end
+
+  defp ecma_line_terminator() do
+    choice([
+      newline(),
+      char("\u000D"),
+      char("\u2028"),
+      char("\u2029")
+    ])
   end
 end

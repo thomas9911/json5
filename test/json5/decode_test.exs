@@ -137,28 +137,50 @@ defmodule Json5.DecodeTest do
         "new": "a keyword"
       }
       """
+    ],
+    [
+      :odd_object,
+      Macro.escape(%{
+        "$_" => Decimal.new(1),
+        "_$" => Decimal.new(2),
+        ~S"a\u200C" => Decimal.new(3)
+      }),
+      ~S"{$_:1,_$:2,a\u200C:3}"
     ]
   ]
 
-  # test "example" do
-  #   text = """
-  #     {
-  #       // comments
-  #       unquoted: 'and you can quote me on that',
-  #       singleQuotes: 'I can use "double quotes" here',
-  #       lineBreaks: "Look, Mom! \
-  #     No \\n's!",
-  #       hexadecimal: 0xdecaf,
-  #       leadingDecimalPoint: .8675309, andTrailing: 8675309.,
-  #       positiveSign: +1,
-  #       trailingComma: 'in objects', andIn: ['arrays',],
-  #       "backwardsCompatible": "with JSON",
-  #     }      
-  #   """
+  test "example" do
+    # text = ~S"""
+    # {
+    #   // comments
+    #   unquoted: 'and you can quote me on that',
+    #   singleQuotes: 'I can use "double quotes" here',
+    #   lineBreaks: "Look, Mom! \
+    # No \\n's!",
+    #   hexadecimal: 0xdecaf,
+    #   leadingDecimalPoint: .8675309, andTrailing: 8675309.,
+    #   positiveSign: +1,
+    #   trailingComma: 'in objects', andIn: ['arrays',],
+    #   "backwardsCompatible": "with JSON",
+    # }      
+    # """
+    text = File.read!("test/support/examples/minimal.json5")
 
-  #   assert Json5.decode(text)
-  #          |> IO.inspect()
-  # end
+    assert {:ok,
+            %{
+              "andIn" => ["arrays"],
+              "andTrailing" => Decimal.new(8_675_309),
+              "backwardsCompatible" => "with JSON",
+              "hexadecimal" =>
+                "decaf" |> String.to_integer(16) |> Decimal.new(),
+              "leadingDecimalPoint" => Decimal.new("0.8675309"),
+              "lineBreaks" => ~S"Look, Mom! No \\n's!",
+              "positiveSign" => Decimal.new(1),
+              "singleQuotes" => "I can use \"double quotes\" here",
+              "trailingComma" => "in objects",
+              "unquoted" => "and you can quote me on that"
+            }} == Json5.decode(text)
+  end
 
   # test "boolean" do
   #   assert {:ok, false} = Json5.decode("false")
