@@ -4,6 +4,7 @@ defmodule Json5.Decode.String do
   """
   import Combine.Parsers.Base
   import Combine.Parsers.Text
+  alias Json5.Decode.Helper
 
   def string() do
     either(
@@ -13,7 +14,7 @@ defmodule Json5.Decode.String do
   end
 
   defp json5_single_string_characters(prev \\ nil) do
-    prev |> many1(json5_single_string_character()) |> map(&Enum.join/1)
+    prev |> many1(json5_single_string_character()) |> map(&:erlang.iolist_to_binary/1)
   end
 
   defp json5_single_string_character() do
@@ -21,7 +22,7 @@ defmodule Json5.Decode.String do
   end
 
   defp json5_double_string_characters(prev \\ nil) do
-    prev |> many1(json5_double_string_character()) |> map(&Enum.join/1)
+    prev |> many1(json5_double_string_character()) |> map(&:erlang.iolist_to_binary/1)
   end
 
   defp json5_double_string_character() do
@@ -29,15 +30,9 @@ defmodule Json5.Decode.String do
   end
 
   defp escape_new_line_char() do
-    either(ignore(sequence([char("\\"), ecma_line_terminator()])), char())
-  end
-
-  defp ecma_line_terminator() do
-    choice([
-      newline(),
-      char("\u000D"),
-      char("\u2028"),
-      char("\u2029")
-    ])
+    either(
+      ignore(sequence([char("\\"), Helper.ecma_line_terminator()])),
+      char()
+    )
   end
 end

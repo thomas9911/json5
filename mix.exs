@@ -29,6 +29,7 @@ defmodule Json5.MixProject do
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:benchee, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, ">= 0.0.0", only: :dev, runtime: false},
+      {:eflame, "~> 1.0", only: :dev, runtime: false},
       {:combine, "~> 0.10"},
       {:ex_unicode, "~> 1.0"},
       {:unicode_set, "~> 0.13"},

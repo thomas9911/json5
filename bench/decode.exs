@@ -17,3 +17,13 @@ Benchee.run(
     "Medium" => medium
   }
 )
+
+
+# Benchee.run(
+#   %{
+#     "json5" => fn input -> Json5.decode!(input) end
+#   },
+#   inputs: %{
+#     "Medium" => medium
+#   }
+# )

@@ -22,9 +22,20 @@ defmodule Json5.Decode.Helper do
                |> List.flatten()
                |> Enum.dedup()
 
+  @line_terminators [
+    "\u{000A}",
+    "\u{000D}",
+    "\u{2028}",
+    "\u{2029}"
+  ]
+
+  @line_terminator_chars '\u{000A}\u{000D}\u{2028}\u{2029}'
+
   defparser lazy(%ParserState{status: :ok} = state, generator) do
     generator.().(state)
   end
+
+  defguard is_line_terminator(ch) when ch in @line_terminator_chars
 
   def lazy_json5_value() do
     lazy(fn -> Decode.json5_value() end)
@@ -50,11 +61,17 @@ defmodule Json5.Decode.Helper do
 
   def single_line_comment do
     skip(
-      between(
+      sequence([
         string("//"),
-        many(if_not(ecma_line_terminator(), char())),
+        take_while(fn
+          ch when is_line_terminator(ch) ->
+            false
+
+          _ ->
+            true
+        end),
         ecma_line_terminator()
-      )
+      ])
     )
   end
 
@@ -62,13 +79,11 @@ defmodule Json5.Decode.Helper do
     skip(word_of(@multi_line_comment_regex))
   end
 
-  defp ecma_line_terminator do
-    one_of(char(), [
-      "\u{000A}",
-      "\u{000D}",
-      "\u{2028}",
-      "\u{2029}"
-    ])
+  def ecma_line_terminator do
+    either(
+      newline(),
+      one_of(char(), @line_terminators)
+    )
   end
 
   defp apply({module, func, args}), do: apply(module, func, args)

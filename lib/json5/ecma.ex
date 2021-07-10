@@ -58,6 +58,12 @@ defmodule Json5.ECMA do
                   "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:][:Mn:][:Mc:][:Nd:][:Pc:]]"
                 )
 
+  defguard is_unicode_letter(x)
+           when Unicode.Set.match?(
+                  x,
+                  "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:]]"
+                )
+
   def reserved_words do
     @reserved_names
   end
@@ -100,17 +106,9 @@ defmodule Json5.ECMA do
   end
 
   defp ecma_unicode_letter() do
-    satisfy(char(), fn ch ->
-      (ch
-       |> Unicode.category()
-       |> Enum.at(0)) in [
-        :Lu,
-        :Ll,
-        :Lt,
-        :Lm,
-        :Lo,
-        :Nl
-      ]
+    satisfy(char(), fn
+      <<ch>> when is_unicode_letter(ch) -> true
+      _ -> false
     end)
   end
 end

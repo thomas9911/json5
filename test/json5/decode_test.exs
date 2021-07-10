@@ -7,7 +7,7 @@ defmodule Json5.DecodeTestHelper do
 end
 
 defmodule Json5.DecodeTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   import Json5.DecodeTestHelper
 
   @valid [
@@ -150,20 +150,6 @@ defmodule Json5.DecodeTest do
   ]
 
   test "example" do
-    # text = ~S"""
-    # {
-    #   // comments
-    #   unquoted: 'and you can quote me on that',
-    #   singleQuotes: 'I can use "double quotes" here',
-    #   lineBreaks: "Look, Mom! \
-    # No \\n's!",
-    #   hexadecimal: 0xdecaf,
-    #   leadingDecimalPoint: .8675309, andTrailing: 8675309.,
-    #   positiveSign: +1,
-    #   trailingComma: 'in objects', andIn: ['arrays',],
-    #   "backwardsCompatible": "with JSON",
-    # }      
-    # """
     text = File.read!("test/support/examples/minimal.json5")
 
     assert {:ok,
@@ -181,86 +167,6 @@ defmodule Json5.DecodeTest do
               "unquoted" => "and you can quote me on that"
             }} == Json5.decode(text)
   end
-
-  # test "boolean" do
-  #   assert {:ok, false} = Json5.decode("false")
-  #   assert {:ok, true} = Json5.decode("true")
-  # end
-
-  # test "null" do
-  #   assert {:ok, nil} = Json5.decode("null")
-  # end
-
-  # test "string" do
-  #   assert {:ok, "just some text"} = Json5.decode("'just some text'")
-
-  #   assert {:ok, "just some text"} = Json5.decode("\"just some text\"")
-  # end
-
-  # test "number hex" do
-  #   assert {:ok, Decimal.new(2801)} == Json5.decode("0xaf1")
-  #   assert {:ok, Decimal.new(120_772)} == Json5.decode("0X1D7c4")
-  # end
-
-  # test "number" do
-  #   assert {:ok, Decimal.new(2801)} == Json5.decode("2801")
-  #   assert {:ok, Decimal.new("0.00002")} == Json5.decode("2e-5")
-  #   assert {:ok, Decimal.new(".123")} == Json5.decode(".123")
-  #   assert {:ok, Decimal.new(".123e+7")} == Json5.decode("+.123e+7")
-  #   assert {:ok, Decimal.new("12.123e+7")} == Json5.decode("12.123e+7")
-  # end
-
-  # test "negative number" do
-  #   assert {:ok, Decimal.new(-2801)} == Json5.decode("-2801")
-  #   assert {:ok, Decimal.new("-0.00002")} == Json5.decode("-2e-5")
-  #   assert {:ok, Decimal.new("-.123")} == Json5.decode("-.123")
-  #   assert {:ok, Decimal.new("-.123e+7")} == Json5.decode("-.123e+7")
-  #   assert {:ok, Decimal.new("-12.123e+7")} == Json5.decode("-12.123e+7")
-  # end
-
-  # test "array" do
-  #   assert {:ok, []} = Json5.decode("[]")
-  #   assert {:ok, [nil]} = Json5.decode("[null]")
-  #   assert {:ok, [Decimal.new(1)]} == Json5.decode("[1]")
-  #   assert {:ok, []} = Json5.decode("[    ]")
-
-  #   assert {:ok, [Decimal.new(1), Decimal.new(2), Decimal.new(3)]} ==
-  #            Json5.decode("[1,2,3]")
-
-  #   assert {:ok, [Decimal.new(1), Decimal.new(2), Decimal.new(3)]} ==
-  #            Json5.decode("[1, 2, 3]")
-
-  #   assert {:ok, [Decimal.new(1), Decimal.new(2), Decimal.new(3)]} ==
-  #            Json5.decode("[1, 2, 3, ]")
-
-  #   assert {:ok, [nil, Decimal.new(2)]} == Json5.decode("[null, 2]")
-
-  #   assert {:ok, [nil, Decimal.new(2), "stuff"]} ==
-  #            Json5.decode("[null, 2 , 'stuff']")
-
-  #   assert {:ok, [nil, Decimal.new(2), "some text"]} ==
-  #            Json5.decode("[null, 2 , 'some text']")
-
-  #   assert {:ok, [nil, Decimal.new(2), "some text"]} ==
-  #            Json5.decode("""
-
-  #            [
-
-  #             null, 2, 
-
-  #            'some text']
-
-  #            """)
-
-  #   assert {:ok,
-  #           [
-  #             Decimal.new(1),
-  #             [Decimal.new(2), [Decimal.new(3), [Decimal.new(4), nil]]]
-  #           ]} ==
-  #            Json5.decode("""
-  #            [1, [2, [3, [4, null]]]]
-  #            """)
-  # end
 
   for [prefix, expected, input] <- @valid do
     test "decode #{prefix} #{input}" do

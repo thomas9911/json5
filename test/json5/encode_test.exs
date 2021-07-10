@@ -1,5 +1,5 @@
 defmodule Json5.EncodeTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   @valid [
     [:number, "1", 1],
