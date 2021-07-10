@@ -33,3 +33,7 @@ def deps do
   ]
 end
 ```
+
+## Note
+
+This library is now quite slow. So only use it when you really need json5 or for input that is only loaded once (for instance configuration).

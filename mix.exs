@@ -27,6 +27,8 @@ defmodule Json5.MixProject do
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:credo, "~> 1.5", only: :dev, runtime: false},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
+      {:benchee, ">= 0.0.0", only: :dev, runtime: false},
+      {:jason, ">= 0.0.0", only: :dev, runtime: false},
       {:combine, "~> 0.10"},
       {:ex_unicode, "~> 1.0"},
       {:unicode_set, "~> 0.13"},
