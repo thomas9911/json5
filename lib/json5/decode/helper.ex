@@ -6,13 +6,12 @@ defmodule Json5.Decode.Helper do
   alias Combine.ParserState
   alias Json5.Decode
 
-  @multi_line_comment_regex ~R(\/\*[\s\S]*?\*\/)
-
   @elements [
     :remove_white_space,
     :single_line_comment,
     :multi_line_comment
   ]
+
   @ignore_tags for(
                  x <- @elements,
                  y <- @elements,
@@ -76,7 +75,13 @@ defmodule Json5.Decode.Helper do
   end
 
   def multi_line_comment do
-    skip(word_of(@multi_line_comment_regex))
+    skip(
+      sequence([
+        string("/*"),
+        many(if_not(string("*/"), char())),
+        string("*/")
+      ])
+    )
   end
 
   def ecma_line_terminator do

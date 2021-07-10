@@ -14,7 +14,9 @@ defmodule Json5.Decode.String do
   end
 
   defp json5_single_string_characters(prev \\ nil) do
-    prev |> many1(json5_single_string_character()) |> map(&:erlang.iolist_to_binary/1)
+    prev
+    |> many1(json5_single_string_character())
+    |> map(&:erlang.iolist_to_binary/1)
   end
 
   defp json5_single_string_character() do
@@ -22,7 +24,9 @@ defmodule Json5.Decode.String do
   end
 
   defp json5_double_string_characters(prev \\ nil) do
-    prev |> many1(json5_double_string_character()) |> map(&:erlang.iolist_to_binary/1)
+    prev
+    |> many1(json5_double_string_character())
+    |> map(&:erlang.iolist_to_binary/1)
   end
 
   defp json5_double_string_character() do
