@@ -24,3 +24,7 @@ json5-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# auto generated files
+src/lexer.erl
+src/parser.erl

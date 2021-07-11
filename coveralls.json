@@ -1,0 +1,6 @@
+{
+    "skip_files": [
+      "src/lexer.erl",
+      "src/parser.erl"
+    ]
+  }

@@ -10,6 +10,8 @@ defmodule Json5.DecodeTest do
   use ExUnit.Case, async: true
   import Json5.DecodeTestHelper
 
+  @backends [Json5.Decode.Backend.Combine, Json5.Decode.Backend.Yecc]
+
   @valid [
     [:null, nil, "null"],
     [:boolean, false, "false"],
@@ -149,88 +151,153 @@ defmodule Json5.DecodeTest do
     ]
   ]
 
-  test "example" do
-    text = File.read!("test/support/examples/minimal.json5")
+  for backend <- @backends do
+    @backend backend
+    describe "backend: #{@backend |> Module.split() |> Enum.at(-1)}" do
+      test "example" do
+        text = File.read!("test/support/examples/minimal.json5")
 
-    assert {:ok,
-            %{
-              "andIn" => ["arrays"],
-              "andTrailing" => Decimal.new(8_675_309),
-              "backwardsCompatible" => "with JSON",
-              "hexadecimal" =>
-                "decaf" |> String.to_integer(16) |> Decimal.new(),
-              "leadingDecimalPoint" => Decimal.new("0.8675309"),
-              "lineBreaks" => ~S"Look, Mom! No \\n's!",
-              "positiveSign" => Decimal.new(1),
-              "singleQuotes" => "I can use \"double quotes\" here",
-              "trailingComma" => "in objects",
-              "unquoted" => "and you can quote me on that"
-            }} == Json5.decode(text)
-  end
+        assert {:ok,
+                %{
+                  "andIn" => ["arrays"],
+                  "andTrailing" => Decimal.new(8_675_309),
+                  "backwardsCompatible" => "with JSON",
+                  "hexadecimal" =>
+                    "decaf" |> String.to_integer(16) |> Decimal.new(),
+                  "leadingDecimalPoint" => Decimal.new("0.8675309"),
+                  "lineBreaks" => ~S"Look, Mom! No \\n's!",
+                  "positiveSign" => Decimal.new(1),
+                  "singleQuotes" => "I can use \"double quotes\" here",
+                  "trailingComma" => "in objects",
+                  "unquoted" => "and you can quote me on that"
+                }} == Json5.decode(text, backend: @backend)
+      end
 
-  for [prefix, expected, input] <- @valid do
-    test "decode #{prefix} #{input}" do
-      assert {:ok, unquote(expected)} = Json5.decode(unquote(input))
+      for [prefix, expected, input] <- @valid do
+        test "decode #{prefix} #{input}" do
+          assert {:ok, unquote(expected)} =
+                   Json5.decode(unquote(input), backend: @backend)
+        end
+      end
+
+      test "invalid keyword key" do
+        input = "{new: 1}"
+        sanity_check = "{test: 1}"
+
+        assert {:ok, _} = Json5.decode(sanity_check, backend: @backend)
+        assert {:error, _} = Json5.decode(input, backend: @backend)
+      end
+
+      test "invalid future keyword key" do
+        input = "{const: 1}"
+        sanity_check = "{test: 1}"
+
+        assert {:ok, _} = Json5.decode(sanity_check, backend: @backend)
+        assert {:error, _} = Json5.decode(input, backend: @backend)
+      end
+
+      test "invalid boolean key" do
+        input = "{true: 1}"
+        sanity_check = "{test: 1}"
+
+        assert {:ok, _} = Json5.decode(sanity_check, backend: @backend)
+        assert {:error, _} = Json5.decode(input, backend: @backend)
+      end
+
+      test "decode existing atom object" do
+        input = """
+        {
+          test: 1,
+          other: null,
+        }
+        """
+
+        expected = %{
+          test: Decimal.new(1),
+          other: nil
+        }
+
+        assert {:ok, expected} ==
+                 Json5.decode(input,
+                   object_key_existing_atom: true,
+                   backend: @backend
+                 )
+      end
+
+      test "decode atom object" do
+        input = """
+        {
+          test: 1,
+          other: null,
+        }
+        """
+
+        expected = %{
+          test: Decimal.new(1),
+          other: nil
+        }
+
+        assert {:ok, expected} ==
+                 Json5.decode(input,
+                   object_key_atom: true,
+                   backend: @backend
+                 )
+      end
+
+      test "decode object with object new function" do
+        input = """
+        {
+          test: 1,
+          other: null,
+        }
+        """
+
+        expected = [
+          {"test", Decimal.new(1)},
+          {"other", nil}
+        ]
+
+        assert {:ok, expected} ==
+                 Json5.decode(input,
+                   object_new_function: &Enum.to_list/1,
+                   backend: @backend
+                 )
+      end
+
+      test "decode object with key function" do
+        input = """
+        {
+          test: 1,
+          other: null,
+        }
+        """
+
+        expected = %{
+          "prefix_test" => Decimal.new(1),
+          "prefix_other" => nil
+        }
+
+        assert {:ok, expected} ==
+                 Json5.decode(input,
+                   object_key_function: fn key -> "prefix_#{key}" end,
+                   backend: @backend
+                 )
+      end
     end
   end
 
-  test "invalid keyword key" do
-    input = "{new: 1}"
-    sanity_check = "{test: 1}"
+  test "decode invalid input" do
+    assert {:error, %Json5.Error{type: :reserved_key} = exception} =
+             Json5.decode("{const: 1}", backend: Json5.Decode.Backend.Yecc)
 
-    assert {:ok, _} = Json5.decode(sanity_check)
-    assert {:error, _} = Json5.decode(input)
+    assert "found a reserved word, 'const'" == Exception.message(exception)
   end
 
-  test "invalid future keyword key" do
-    input = "{const: 1}"
-    sanity_check = "{test: 1}"
-
-    assert {:ok, _} = Json5.decode(sanity_check)
-    assert {:error, _} = Json5.decode(input)
+  test "default backend works" do
+    assert {:ok, ["testing"]} == Json5.decode("['testing']")
   end
 
-  test "invalid boolean key" do
-    input = "{true: 1}"
-    sanity_check = "{test: 1}"
-
-    assert {:ok, _} = Json5.decode(sanity_check)
-    assert {:error, _} = Json5.decode(input)
-  end
-
-  test "decode atom object" do
-    input = """
-    {
-      test: 1,
-      other: null,
-    }
-    """
-
-    expected = %{
-      test: Decimal.new(1),
-      other: nil
-    }
-
-    assert {:ok, expected} ==
-             Json5.decode(input, object_key_existing_atom: true)
-  end
-
-  test "decode object with key function" do
-    input = """
-    {
-      test: 1,
-      other: null,
-    }
-    """
-
-    expected = %{
-      "prefix_test" => Decimal.new(1),
-      "prefix_other" => nil
-    }
-
-    assert {:ok, expected} ==
-             Json5.decode(input,
-               object_key_function: fn key -> "prefix_#{key}" end
-             )
+  test "decode! works" do
+    assert ["testing"] == Json5.decode!("['testing']")
   end
 end

@@ -1,10 +1,13 @@
-defmodule Json5.Decode.Helper do
+defmodule Json5.Decode.Backend.Combine.Helper do
+  @moduledoc """
+  General helper functions
+  """
   import Combine.Helpers
   import Combine.Parsers.Base
   import Combine.Parsers.Text
 
   alias Combine.ParserState
-  alias Json5.Decode
+  alias Json5.Decode.Backend.Combine, as: Decode
 
   @elements [
     :remove_white_space,
@@ -36,7 +39,7 @@ defmodule Json5.Decode.Helper do
 
   defguard is_line_terminator(ch) when ch in @line_terminator_chars
 
-  def lazy_json5_value() do
+  def lazy_json5_value do
     lazy(fn -> Decode.json5_value() end)
   end
 

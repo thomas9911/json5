@@ -45,6 +45,23 @@ defmodule Json5.EncodeTest do
     assert expected == Json5.encode!(input, pretty: true)
   end
 
+  test "encode double quote string" do
+    input = %{const: ["one", "two", "three"]}
+
+    expected = """
+    {
+      "const": [
+        "one",
+        "two",
+        "three",
+      ],
+    }
+    """
+
+    assert expected ==
+             Json5.encode!(input, pretty: true, double_quote_string: true)
+  end
+
   test "encode object map pretty" do
     input = %{
       "using spaces" => 1,
@@ -87,7 +104,7 @@ defmodule Json5.EncodeTest do
   end
 
   test "encode invalid input" do
-    assert {:error, %Json5.Encode.Error{type: :invalid_input} = exception} =
+    assert {:error, %Json5.Error{type: :invalid_input} = exception} =
              Json5.encode(0..10, %{compact: true})
 
     assert "unable to format input" == Exception.message(exception)
