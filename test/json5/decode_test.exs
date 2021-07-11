@@ -204,7 +204,7 @@ defmodule Json5.DecodeTest do
         assert {:error, _} = Json5.decode(input, backend: @backend)
       end
 
-      test "decode atom object" do
+      test "decode existing atom object" do
         input = """
         {
           test: 1,
@@ -220,6 +220,46 @@ defmodule Json5.DecodeTest do
         assert {:ok, expected} ==
                  Json5.decode(input,
                    object_key_existing_atom: true,
+                   backend: @backend
+                 )
+      end
+
+      test "decode atom object" do
+        input = """
+        {
+          test: 1,
+          other: null,
+        }
+        """
+
+        expected = %{
+          test: Decimal.new(1),
+          other: nil
+        }
+
+        assert {:ok, expected} ==
+                 Json5.decode(input,
+                   object_key_atom: true,
+                   backend: @backend
+                 )
+      end
+
+      test "decode object with object new function" do
+        input = """
+        {
+          test: 1,
+          other: null,
+        }
+        """
+
+        expected = [
+          {"test", Decimal.new(1)},
+          {"other", nil}
+        ]
+
+        assert {:ok, expected} ==
+                 Json5.decode(input,
+                   object_new_function: &Enum.to_list/1,
                    backend: @backend
                  )
       end

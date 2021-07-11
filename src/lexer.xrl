@@ -1,4 +1,5 @@
 Definitions.
+
 Digit = [0-9]
 HexDigit = [0-9a-fA-F]
 Float = (\+|-)?{Digit}+\.?{Digit}+?((E|e)(\+|-)?{Digit}+)?
@@ -38,9 +39,8 @@ false : {token, {boolean, TokenLine, false}}.
 %% multiline comment
 /\*[^(*/)]*\*/         : skip_token.
 
-
-
 Erlang code.
+
 strip_quotes(Str) ->
     tl(lists:droplast(Str)).
 

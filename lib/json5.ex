@@ -18,6 +18,10 @@ defmodule Json5 do
     - if none of the above options are set return the key as a binary (String.t())
   - object_new_function: ({any, any}) -> any
     - function to create a map from the list of parsed tuples, by default uses `Map.new/1`
+  - backend: [`Json5.Decode.Backend.Combine`, `Json5.Decode.Backend.Yecc`]
+    - select the backend to be used (Defaults to Combine). 
+    - The Combine backend is coded with the json5 spec (with unicode) in mind, but a lot slower (about 2000x slower than `Jason`)
+    - The Yecc backend is a lot faster (about 6x slower than `Jason`) but not that rigorous based on the json5 spec. It is just written to make the existing tests work.
 
   ```elixir
   iex> Json5.decode("{array: [1, 2, 3], map: {'null': null, test: 1, }, }")

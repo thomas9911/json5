@@ -38,9 +38,13 @@ defmodule Json5.Decode.Backend.Yecc do
   end
 
   defp to_term({:map, _, key_value_list}, config) do
-    Map.new(key_value_list, fn {key, value} ->
+    func = Map.get(config, :object_new_function, &Map.new/1)
+
+    key_value_list
+    |> Enum.map(fn {key, value} ->
       {to_term(key, config), to_term(value, config)}
     end)
+    |> func.()
   end
 
   defp to_term({:list, _, list}, config) do
@@ -61,6 +65,10 @@ defmodule Json5.Decode.Backend.Yecc do
   end
 
   def do_key_term(key, %{object_key_existing_atom: true}) do
+    String.to_existing_atom(key)
+  end
+
+  def do_key_term(key, %{object_key_atom: true}) do
     String.to_existing_atom(key)
   end
 
