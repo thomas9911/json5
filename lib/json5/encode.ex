@@ -6,8 +6,8 @@ defmodule Json5.Encode do
   require Json5.ECMA
 
   alias Json5.Encode.Array
-  alias Json5.Encode.Error
   alias Json5.Encode.Object
+  alias Json5.Error
 
   defguardp is_to_string(input)
             when input in [true, false] or is_float(input) or is_integer(input) or

@@ -87,7 +87,7 @@ defmodule Json5.EncodeTest do
   end
 
   test "encode invalid input" do
-    assert {:error, %Json5.Encode.Error{type: :invalid_input} = exception} =
+    assert {:error, %Json5.Error{type: :invalid_input} = exception} =
              Json5.encode(0..10, %{compact: true})
 
     assert "unable to format input" == Exception.message(exception)

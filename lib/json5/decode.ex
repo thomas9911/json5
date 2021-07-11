@@ -4,10 +4,14 @@ defmodule Json5.Decode do
   """
 
   def parse(input, config \\ %{}) do
-    backend().parse(input, config)
+    backend(config).parse(input, config)
   end
 
-  defp backend do
+  defp backend(%{backend: backend}) do
+    backend
+  end
+
+  defp backend(_) do
     Json5.Decode.Backend.Combine
   end
 end
