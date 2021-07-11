@@ -5,7 +5,9 @@ defmodule Json5.Encode do
   require Decimal
   require Json5.ECMA
 
-  alias Json5.Encode
+  alias Json5.Encode.Array
+  alias Json5.Encode.Error
+  alias Json5.Encode.Object
 
   defguardp is_to_string(input)
             when input in [true, false] or is_float(input) or is_integer(input) or
@@ -35,15 +37,14 @@ defmodule Json5.Encode do
   end
 
   def do_dump(input, config) when is_list(input) do
-    Encode.Array.dump(input, config)
+    Array.dump(input, config)
   end
 
   def do_dump(input, config) when is_map(input) and not is_struct(input) do
-    Encode.Object.dump(input, config)
+    Object.dump(input, config)
   end
 
   def do_dump(input, _) do
-    {:error,
-     Json5.Encode.Error.exception(%{type: :invalid_input, input: input})}
+    {:error, Error.exception(%{type: :invalid_input, input: input})}
   end
 end

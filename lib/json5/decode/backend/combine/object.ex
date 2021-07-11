@@ -1,12 +1,12 @@
-defmodule Json5.Decode.Object do
+defmodule Json5.Decode.Backend.Combine.Object do
   @moduledoc """
   Documentation for `Json5`.
   """
   import Combine.Parsers.Base
   import Combine.Parsers.Text
-  import Json5.Decode.Helper
+  import Json5.Decode.Backend.Combine.Helper
 
-  alias Json5.Decode
+  alias Json5.Decode.Backend.Combine.String, as: Json5String
   alias Json5.ECMA
 
   require Json5.ECMA
@@ -63,19 +63,19 @@ defmodule Json5.Decode.Object do
     )
   end
 
-  defp json5_member_name() do
+  defp json5_member_name do
     either(
       ecma_identifier(),
-      Decode.String.string()
+      Json5String.string()
     )
   end
 
-  defp ecma_identifier() do
+  defp ecma_identifier do
     if_not(ecma_reserved_word(), ECMA.ecma_identifier_name())
   end
 
-  defp ecma_reserved_word() do
-    choice(Enum.map(Json5.ECMA.reserved_words(), &string/1))
+  defp ecma_reserved_word do
+    choice(Enum.map(ECMA.reserved_words(), &string/1))
   end
 
   defp cast_json5_member([key, value], %{object_key_function: func})

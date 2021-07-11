@@ -1,15 +1,15 @@
-defmodule Json5.Decode.Number do
+defmodule Json5.Decode.Backend.Combine.Number do
   @moduledoc """
   Documentation for `Json5`.
   """
   import Combine.Parsers.Base
   import Combine.Parsers.Text
 
-  def number() do
+  def number do
     either(ecma_hex_integer_literal(), ecma_decimal_literal())
   end
 
-  defp ecma_hex_integer_literal() do
+  defp ecma_hex_integer_literal do
     pipe(
       [
         ignore(either(string("0x"), string("0X"))),
@@ -68,7 +68,7 @@ defmodule Json5.Decode.Number do
     prev |> many1(digit()) |> map(&Enum.join/1)
   end
 
-  defp ecma_exponent_part() do
+  defp ecma_exponent_part do
     both(either(char("e"), char("E")), ecma_signed_integer(), &"#{&1}#{&2}")
   end
 

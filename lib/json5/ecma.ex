@@ -79,7 +79,7 @@ defmodule Json5.ECMA do
     end
   end
 
-  def ecma_identifier_name() do
+  def ecma_identifier_name do
     pipe(
       [
         ecma_identifier_start(),
@@ -89,7 +89,7 @@ defmodule Json5.ECMA do
     )
   end
 
-  defp ecma_identifier_start() do
+  defp ecma_identifier_start do
     choice([
       char("$"),
       char("_"),
@@ -98,14 +98,14 @@ defmodule Json5.ECMA do
     ])
   end
 
-  defp ecma_identifier_part() do
+  defp ecma_identifier_part do
     either(
       ecma_identifier_start(),
       satisfy(char(), &is_unicode_identifier_letter/1)
     )
   end
 
-  defp ecma_unicode_letter() do
+  defp ecma_unicode_letter do
     satisfy(char(), fn
       <<ch>> when is_unicode_letter(ch) -> true
       _ -> false

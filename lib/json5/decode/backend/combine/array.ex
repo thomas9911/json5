@@ -1,10 +1,10 @@
-defmodule Json5.Decode.Array do
+defmodule Json5.Decode.Backend.Combine.Array do
   @moduledoc """
   Documentation for `Json5`.
   """
   import Combine.Parsers.Base
   import Combine.Parsers.Text
-  import Json5.Decode.Helper
+  import Json5.Decode.Backend.Combine.Helper
 
   def array do
     either(
