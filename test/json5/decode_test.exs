@@ -286,7 +286,18 @@ defmodule Json5.DecodeTest do
     end
   end
 
+  test "decode invalid input" do
+    assert {:error, %Json5.Error{type: :reserved_key} = exception} =
+             Json5.decode("{const: 1}", backend: Json5.Decode.Backend.Yecc)
+
+    assert "found a reserved word, 'const'" == Exception.message(exception)
+  end
+
   test "default backend works" do
     assert {:ok, ["testing"]} == Json5.decode("['testing']")
+  end
+
+  test "decode! works" do
+    assert ["testing"] == Json5.decode!("['testing']")
   end
 end

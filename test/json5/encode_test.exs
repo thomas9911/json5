@@ -45,6 +45,23 @@ defmodule Json5.EncodeTest do
     assert expected == Json5.encode!(input, pretty: true)
   end
 
+  test "encode double quote string" do
+    input = %{const: ["one", "two", "three"]}
+
+    expected = """
+    {
+      "const": [
+        "one",
+        "two",
+        "three",
+      ],
+    }
+    """
+
+    assert expected ==
+             Json5.encode!(input, pretty: true, double_quote_string: true)
+  end
+
   test "encode object map pretty" do
     input = %{
       "using spaces" => 1,
