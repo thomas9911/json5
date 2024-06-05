@@ -25,7 +25,7 @@ defmodule Json5.Decode.Backend.Yecc do
     charlist
     |> :string.replace([92, 13, 10], [])
     |> :string.replace([92, 10], [])
-    |> :erlang.iolist_to_binary()
+    |> :unicode.characters_to_binary()
   end
 
   defp to_term({:key, _, charlist}, config) do
