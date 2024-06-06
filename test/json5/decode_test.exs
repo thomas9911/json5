@@ -18,6 +18,7 @@ defmodule Json5.DecodeTest do
     [:boolean, true, "true"],
     ["string single quote", "some text", "'some text'"],
     ["string double quote", "some text", "\"some text\""],
+    ["string unicode", "ūňĭčŏďē text", "\"ūňĭčŏďē text\""],
     ["number hex", decimal(2801), "0xaf1"],
     ["number hex", decimal(120_772), "0X1D7c4"],
     [:number, decimal(2801), "2801"],
