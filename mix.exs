@@ -37,8 +37,8 @@ defmodule Json5.MixProject do
       {:eflame, "~> 1.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:combine, "~> 0.10"},
-      {:ex_unicode, "~> 1.0"},
-      {:unicode_set, "~> 0.13"},
+      {:unicode, "~> 1.19"},
+      {:unicode_set, "~> 1.4"},
       {:decimal, "~> 2.0.0"}
     ]
   end

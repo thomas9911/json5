@@ -31,7 +31,7 @@ defmodule Json5.Decode.Backend.Combine.Helper do
     "\u{2029}"
   ]
 
-  @line_terminator_chars '\u{000A}\u{000D}\u{2028}\u{2029}'
+  @line_terminator_chars ~c"\u{000A}\u{000D}\u{2028}\u{2029}"
 
   defparser lazy(%ParserState{status: :ok} = state, generator) do
     generator.().(state)
