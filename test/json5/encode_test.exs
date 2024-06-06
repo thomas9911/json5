@@ -13,9 +13,14 @@ defmodule Json5.EncodeTest do
     [:object, "{'using spaces': 1, }", Macro.escape(%{"using spaces" => 1})],
     [
       :mixed_object,
-      """
-      {array: [1, 2, 3], nested: {more: 123, }, valid_key: true, 'using spaces': 1, }\
-      """,
+      {
+        """
+        {array: [1, 2, 3], nested: {more: 123, }, valid_key: true, 'using spaces': 1, }\
+        """,
+        """
+        {array: [1, 2, 3], valid_key: true, nested: {more: 123, }, 'using spaces': 1, }\
+        """
+      },
       Macro.escape(%{
         "using spaces" => 1,
         valid_key: true,
@@ -25,11 +30,18 @@ defmodule Json5.EncodeTest do
     ]
   ]
 
-  for [prefix, expected, input] <- @valid do
-    test "encode #{prefix} #{expected}" do
-      assert {:ok, unquote(expected)} = Json5.encode(unquote(input))
-    end
-  end
+  Enum.map(@valid, fn
+    [prefix, expected, input] when is_tuple(expected) ->
+      test "encode #{prefix} #{elem(expected, 0)}" do
+        {:ok, out} = Json5.encode(unquote(input))
+        assert out in Tuple.to_list(unquote(expected))
+      end
+
+    [prefix, expected, input] ->
+      test "encode #{prefix} #{expected}" do
+        assert {:ok, unquote(expected)} = Json5.encode(unquote(input))
+      end
+  end)
 
   test "encode array pretty" do
     input = ["one", "two", "three"]
@@ -70,7 +82,7 @@ defmodule Json5.EncodeTest do
       array: [1, 2, 3]
     }
 
-    expected = """
+    expected_1 = """
     {
       array: [
         1,
@@ -85,7 +97,22 @@ defmodule Json5.EncodeTest do
     }
     """
 
-    assert expected == Json5.encode!(input, pretty: true)
+    expected_2 = """
+    {
+      array: [
+        1,
+        2,
+        3,
+      ],
+      valid_key: true,
+      nested: {
+        more: 123,
+      },
+      'using spaces': 1,
+    }
+    """
+
+    assert Json5.encode!(input, pretty: true) in [expected_1, expected_2]
   end
 
   test "encode object map compact" do
@@ -96,11 +123,15 @@ defmodule Json5.EncodeTest do
       array: [1, 2, 3]
     }
 
-    expected = """
+    expected_1 = """
     {array:[1,2,3],nested:{more:123},valid_key:true,'using spaces':1}\
     """
 
-    assert expected == Json5.encode!(input, compact: true)
+    expected_2 = """
+    {array:[1,2,3],valid_key:true,nested:{more:123},'using spaces':1}\
+    """
+
+    assert Json5.encode!(input, compact: true) in [expected_1, expected_2]
   end
 
   test "encode invalid input" do
