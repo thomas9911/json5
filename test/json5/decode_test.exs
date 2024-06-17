@@ -18,6 +18,8 @@ defmodule Json5.DecodeTest do
     [:boolean, true, "true"],
     ["string single quote", "some text", "'some text'"],
     ["string double quote", "some text", "\"some text\""],
+    ["empty string single quote", "", "''"],
+    ["empty string double quote", "", "\"\""],
     ["string unicode", "ūňĭčŏďē text", "\"ūňĭčŏďē text\""],
     ["number hex", decimal(2801), "0xaf1"],
     ["number hex", decimal(120_772), "0X1D7c4"],
@@ -47,7 +49,7 @@ defmodule Json5.DecodeTest do
 
       [
 
-       null, 2, 
+       null, 2,
 
       'some text']
 
@@ -75,7 +77,7 @@ defmodule Json5.DecodeTest do
       :comment,
       [decimal(1), decimal(2)],
       """
-      [1, 
+      [1,
       // wauw comment
       2]
       """
@@ -84,7 +86,7 @@ defmodule Json5.DecodeTest do
       :multi_line_comment,
       [decimal(1), decimal(2)],
       """
-      [1, 
+      [1,
       /*
 
       just some text
@@ -131,7 +133,7 @@ defmodule Json5.DecodeTest do
       }),
       """
       {
-        test: 1, 
+        test: 1,
         'text': null,
         "nested": {
           other: 123,

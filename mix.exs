@@ -4,7 +4,7 @@ defmodule Json5.MixProject do
   def project do
     [
       app: :json5,
-      version: "0.3.0",
+      version: "0.3.1",
       elixir: "~> 1.10",
       description: "Json5 in Elixir",
       start_permanent: Mix.env() == :prod,
@@ -16,6 +16,7 @@ defmodule Json5.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
+      compilers: [:yecc, :leex] ++ Mix.compilers(),
       package: package(),
       source_url: "https://github.com/thomas9911/json5"
     ]
