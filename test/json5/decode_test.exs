@@ -33,6 +33,7 @@ defmodule Json5.DecodeTest do
     [:number, decimal("-.123"), "-.123"],
     [:number, decimal("-.123e+7"), "-.123e+7"],
     [:number, decimal("-12.123e+7"), "-12.123e+7"],
+    [:array, [], " []   "],
     [:array, [], "[]"],
     [:array, [nil], "[null]"],
     [:array, [decimal(1)], "[1]"],
@@ -83,6 +84,22 @@ defmodule Json5.DecodeTest do
       """
     ],
     [
+      :comment,
+      Macro.escape(%{
+        "test" => []
+      }),
+      """
+      {
+      "test": [
+        // {
+        // "test2": "",
+        // "test3": "",
+        // },
+        ]
+      }
+      """
+    ],
+    [
       :multi_line_comment,
       [decimal(1), decimal(2)],
       """
@@ -112,6 +129,7 @@ defmodule Json5.DecodeTest do
       """
     ],
     [:object, Macro.escape(%{}), "{}"],
+    [:object, Macro.escape(%{}), "  {} "],
     [:object, Macro.escape(%{}), "{    }"],
     [:object, Macro.escape(%{"a" => Decimal.new(1)}), "{a : 1}"],
     [:object, Macro.escape(%{"test" => Decimal.new(1)}), "{test: 1}"],
