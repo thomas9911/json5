@@ -7,29 +7,20 @@ defmodule Json5.Decode.Backend.Combine.Array do
   import Json5.Decode.Backend.Combine.Helper
 
   def array do
-    either(
-      pipe(
-        [
-          ignore_whitespace(),
-          char("["),
-          ignore_whitespace(),
-          char("]"),
-          ignore_whitespace()
-        ],
-        fn _ -> [] end
+    between(
+      ignore(sequence([ignore_whitespace(), char("[")])),
+      either(
+        pipe(
+          [
+            ignore_whitespace(),
+            array_items(),
+            ignore_whitespace()
+          ],
+          fn [expr] -> expr end
+        ),
+        map(ignore_whitespace(), fn _ -> [] end)
       ),
-      pipe(
-        [
-          ignore_whitespace(),
-          ignore(char("[")),
-          ignore_whitespace(),
-          array_items(),
-          ignore_whitespace(),
-          ignore(char("]")),
-          ignore_whitespace()
-        ],
-        fn [expr] -> expr end
-      )
+      ignore(sequence([ignore_whitespace(), char("]")]))
     )
   end
 
