@@ -102,15 +102,12 @@ defmodule Json5.ECMA do
 
   defp unicode_identifier_letter?(x) do
     Unicode.Set.match?(
-                      x,
-                      "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:][:Mn:][:Mc:][:Nd:][:Pc:]]"
-                    )
+      x,
+      "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:][:Mn:][:Mc:][:Nd:][:Pc:]]"
+    )
   end
 
   defp unicode_letter?(x) do
-    Unicode.Set.match?(
-                      x,
-                      "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:]]"
-                    )
+    Unicode.Set.match?(x, "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:]]")
   end
 end
