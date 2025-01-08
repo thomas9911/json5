@@ -52,18 +52,6 @@ defmodule Json5.ECMA do
 
   defguard is_reserved_word(input) when input in @reserved_names
 
-  defguard is_unicode_identifier_letter(x)
-           when Unicode.Set.match?(
-                  x,
-                  "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:][:Mn:][:Mc:][:Nd:][:Pc:]]"
-                )
-
-  defguard is_unicode_letter(x)
-           when Unicode.Set.match?(
-                  x,
-                  "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:]]"
-                )
-
   def reserved_words do
     @reserved_names
   end
@@ -101,14 +89,28 @@ defmodule Json5.ECMA do
   defp ecma_identifier_part do
     either(
       ecma_identifier_start(),
-      satisfy(char(), &is_unicode_identifier_letter/1)
+      satisfy(char(), &unicode_identifier_letter?/1)
     )
   end
 
   defp ecma_unicode_letter do
     satisfy(char(), fn
-      <<ch>> when is_unicode_letter(ch) -> true
+      <<ch>> -> unicode_letter?(ch)
       _ -> false
     end)
+  end
+
+  defp unicode_identifier_letter?(x) do
+    Unicode.Set.match?(
+                      x,
+                      "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:][:Mn:][:Mc:][:Nd:][:Pc:]]"
+                    )
+  end
+
+  defp unicode_letter?(x) do
+    Unicode.Set.match?(
+                      x,
+                      "[[:Lu:][:Ll:][:Lt:][:Lm:][:Lo:][:Nl:]]"
+                    )
   end
 end
