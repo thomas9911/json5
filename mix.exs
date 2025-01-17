@@ -4,7 +4,7 @@ defmodule Json5.MixProject do
   def project do
     [
       app: :json5,
-      version: "0.3.2",
+      version: "0.4.0",
       elixir: "~> 1.14",
       description: "Json5 in Elixir",
       start_permanent: Mix.env() == :prod,
