@@ -69,7 +69,7 @@ defmodule Json5.Decode.Backend.Yecc do
   end
 
   def do_key_term(key, %{object_key_atom: true}) do
-    String.to_existing_atom(key)
+    String.to_atom(key)
   end
 
   def do_key_term(key, %{object_key_function: object_key_function}) do
