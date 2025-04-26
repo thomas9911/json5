@@ -4,7 +4,9 @@ defmodule Json5.Decode.Backend.Combine.Object do
   """
   import Combine.Parsers.Base
   import Combine.Parsers.Text
-  import Json5.Decode.Backend.Combine.Helper
+
+  import Json5.Decode.Backend.Combine.Helper,
+    only: [ignore_whitespace: 0, ignored_comma: 0, lazy_json5_value: 0]
 
   alias Json5.Decode.Backend.Combine.String, as: Json5String
   alias Json5.ECMA
@@ -71,7 +73,17 @@ defmodule Json5.Decode.Backend.Combine.Object do
   end
 
   defp ecma_identifier do
-    if_not(ecma_reserved_word(), ECMA.ecma_identifier_name())
+    if_not(
+      pipe(
+        [
+          ecma_reserved_word(),
+          ignore_whitespace(),
+          ignore(char(":"))
+        ],
+        & &1
+      ),
+      ECMA.ecma_identifier_name()
+    )
   end
 
   defp ecma_reserved_word do

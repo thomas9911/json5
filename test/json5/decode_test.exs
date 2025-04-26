@@ -140,6 +140,16 @@ defmodule Json5.DecodeTest do
     ],
     [
       :object,
+      Macro.escape(%{"document" => "world"}),
+      "{document: 'world'}"
+    ],
+    [
+      :object,
+      Macro.escape(%{"truestatement" => "true"}),
+      "{truestatement: 'true'}"
+    ],
+    [
+      :object,
       Macro.escape(%{
         "test" => Decimal.new(1),
         "text" => nil,
@@ -203,6 +213,14 @@ defmodule Json5.DecodeTest do
 
       test "invalid keyword key" do
         input = "{new: 1}"
+        sanity_check = "{test: 1}"
+
+        assert {:ok, _} = Json5.decode(sanity_check, backend: @backend)
+        assert {:error, _} = Json5.decode(input, backend: @backend)
+      end
+
+      test "invalid keyword key (extra spaces)" do
+        input = "{do   : 1}"
         sanity_check = "{test: 1}"
 
         assert {:ok, _} = Json5.decode(sanity_check, backend: @backend)
